@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 
-const isTrue = false;
+const isTrue = true;
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <main data-theme={isTrue ? 'light' : 'dark'} className=' h-screen font-OpenSans'>
+    <main data-theme={isTrue ? 'dark' : 'light'} className=' h-screen font-OpenSans'>
       <App />
     </main>
   </React.StrictMode>,
