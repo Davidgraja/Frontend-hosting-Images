@@ -13,7 +13,7 @@ export const Navbar = () => {
                     </label>
 
                     <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                    <li><a>Subir archivo</a></li>
+                    <li><p onClick={()=>window.my_modal_3.showModal()}>Subir archivo</p></li>
                     <li><a>Mis imagenes</a></li>
                     </ul>
 
@@ -26,7 +26,7 @@ export const Navbar = () => {
             <div className="navbar-center hidden lg:flex">
 
                 <ul className="menu menu-horizontal px-1">
-                    <li><a>Subir archivo</a></li>
+                    <li onClick={()=>window.my_modal_3.showModal()}><p>Subir archivo</p></li>
                     <li><a>Mis imagenes</a></li>
                 </ul>
 
