@@ -12,7 +12,12 @@ export const Modal = () => {
                     
                     <input type="file" className="file-input file-input-bordered w-full my-6" />
 
-                    <select className="select w-full mb-6" value={selectedFolder} onChange={(e)=> setSelectedFolder(e.target.value)} >
+                    <select 
+                        className="select w-full mb-6" 
+                        value={selectedFolder} 
+                        onChange={(e)=> setSelectedFolder(e.target.value)}  
+                        disabled={newFolder}
+                    >
                         <option value={'homer'}>Homer</option>
                         <option value={'marge'}>Marge</option>
                         <option value={'bart'}>Bart</option>
@@ -20,9 +25,9 @@ export const Modal = () => {
                         <option value={'magguie'}>Maggie</option>
                     </select>
                     
-                    <div className="form-control">
+                    <div className="form-control mb-6">
                         <label className="label cursor-pointer">
-                            <span className="label-text">nueva carpeta ? </span> 
+                            <span className="label-text">Crear nueva carpeta ?</span> 
                             <input 
                                 type="checkbox"  
                                 className="checkbox" 
@@ -31,6 +36,11 @@ export const Modal = () => {
                                 />
                         </label>
                     </div>
+
+                    {
+                        newFolder  && <input type="text" placeholder="Nombre de la carpeta" className="input w-full mb-6" />
+                    }
+                    
 
                     <button className="btn btn-primary">Guardar</button>
                 </form>
