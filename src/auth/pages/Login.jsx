@@ -1,10 +1,19 @@
 import { IconBrandFacebook , IconBrandGoogle } from '@tabler/icons-react';
 import { FormLogin, FormRegister, ProvidersBtn} from '../components';
 import { useState } from 'react';
+import { useAuthStore } from '../../hooks';
 
 export const Login = () => {
 
-    const [formState, setformState] = useState(true)
+    // hooks
+    const { startGoogleSingIn } = useAuthStore();
+
+    const [formState, setformState] = useState(true);
+
+    // methods
+    const onGoogleSingIn = () =>{
+        startGoogleSingIn();
+    }
 
     return (
         <section className="h-full flex items-center justify-center">
@@ -24,7 +33,7 @@ export const Login = () => {
                         icon={ <IconBrandGoogle/>}
                         text={'Google'}
                         textColor={'text-white'}
-
+                        clickEvent={onGoogleSingIn}
                     />
                 
                 </div> 
