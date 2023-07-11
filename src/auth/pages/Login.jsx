@@ -1,4 +1,4 @@
-import { IconBrandFacebook , IconBrandGoogle } from '@tabler/icons-react';
+import { IconBrandGithub, IconBrandGoogle } from '@tabler/icons-react';
 import { FormLogin, FormRegister, ProvidersBtn} from '../components';
 import { useState } from 'react';
 import { useAuthStore } from '../../hooks';
@@ -6,7 +6,7 @@ import { useAuthStore } from '../../hooks';
 export const Login = () => {
 
     // hooks
-    const { startGoogleSingIn } = useAuthStore();
+    const { startGoogleSingIn , startGitHubSingIn} = useAuthStore();
 
     const [formState, setformState] = useState(true);
 
@@ -15,24 +15,28 @@ export const Login = () => {
         startGoogleSingIn();
     }
 
+    const onGitHubSingIn = () => {
+        startGitHubSingIn();
+    }
+
     return (
         <section className="h-full flex items-center justify-center">
             <div className="flex flex-col w-11/12 md:flex-row md:w-full md:justify-center ">
                 <div className=" p-2 grid gap-3 h-auto card  rounded-box items-center ">
 
                     <ProvidersBtn 
-                        btnColor={' btn-primary'} 
-                        icon={ <IconBrandFacebook/>}
-                        text={'Facebook'}
+                        btnColor={'btn-neutral'} 
+                        icon={ <IconBrandGithub/>}
+                        text={'GitHub'}
                         textColor={'text-white'}
-
+                        clickEvent={onGitHubSingIn}
                     />
 
                     <ProvidersBtn 
-                        btnColor={'btn-neutral'} 
+                        btnColor={'btn-active'} 
                         icon={ <IconBrandGoogle/>}
                         text={'Google'}
-                        textColor={'text-white'}
+                        textColor={'text-black'}
                         clickEvent={onGoogleSingIn}
                     />
                 
