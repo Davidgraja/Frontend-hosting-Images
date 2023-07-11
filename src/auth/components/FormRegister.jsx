@@ -1,11 +1,47 @@
+import { useForm } from "../../hooks"
 import { FormBasic } from "./FormBasic"
 
 export const FormRegister = () => {
+
+    const { nombre , email , password  , onEventInput} = useForm({
+        nombre : '',
+        email : '',
+        password : ''
+    })
+
+    const onSubmit = (event) =>{
+        event.preventDefault()
+        if(!nombre || !email || !password) return;
+        console.log({nombre , email, password})
+    }
     return (
-        <FormBasic btnText={'Registrarse'}>
-            <input type="text" placeholder="Nombre" className=" input w-full  mb-3 input-accent" />
-            <input type="email" placeholder="Email" className=" input w-full  mb-3 input-accent" />
-            <input type="password" placeholder="Contraseña" className=" input  w-full  mb-3 input-accent" />
+        <FormBasic btnText={'Registrarse'}  submitEvent={ onSubmit }>
+            <input 
+                type="text" 
+                placeholder="Nombre" 
+                className=" input w-full  mb-3 input-accent" 
+                name="nombre"
+                value={ nombre }
+                onChange={ onEventInput }
+            />
+
+            <input 
+                type="email" 
+                placeholder="email" 
+                className=" input w-full  mb-3 input-accent" 
+                name="email"
+                value={ email }
+                onChange={ onEventInput }
+            />
+
+            <input 
+                type="password" 
+                placeholder="Contraseña" 
+                className=" input  w-full  mb-3 input-accent" 
+                name="password"
+                value={ password }
+                onChange={ onEventInput }
+            />
         </FormBasic>
     )
 }
