@@ -6,17 +6,13 @@ import { useAuthStore } from '../../hooks';
 export const Login = () => {
 
     // hooks
-    const { startGoogleSingIn , startGitHubSingIn} = useAuthStore();
+    const {startGithubAndGoogleSinIn} = useAuthStore();
 
     const [formState, setformState] = useState(true);
 
     // methods
-    const onGoogleSingIn = () =>{
-        startGoogleSingIn();
-    }
-
-    const onGitHubSingIn = () => {
-        startGitHubSingIn();
+    const onGitHubAndGoogleSingIn = (provider= '') => {
+        startGithubAndGoogleSinIn(provider);
     }
 
     return (
@@ -29,7 +25,7 @@ export const Login = () => {
                         icon={ <IconBrandGithub/>}
                         text={'GitHub'}
                         textColor={'text-white'}
-                        clickEvent={onGitHubSingIn}
+                        clickEvent={() => onGitHubAndGoogleSingIn()}
                     />
 
                     <ProvidersBtn 
@@ -37,7 +33,7 @@ export const Login = () => {
                         icon={ <IconBrandGoogle/>}
                         text={'Google'}
                         textColor={'text-black'}
-                        clickEvent={onGoogleSingIn}
+                        clickEvent={() => onGitHubAndGoogleSingIn('google')}
                     />
                 
                 </div> 

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { checkingCredentials, login, logout } from "../store/auth";
-import { signInWithGoogle , singInWithGitHub , registerUserWithEmailPassword , singInWidthEmailAndPassword } from "../firebase/providers";
+import { registerUserWithEmailPassword , singInWidthEmailAndPassword  , googleAndGithubProvider} from "../firebase/providers";
 import axiosInstance from "../axios/axiosInstance";
 
 export const useAuthStore = () => {
@@ -12,11 +12,11 @@ export const useAuthStore = () => {
         dispatch(checkingCredentials());
     }
 
-    //! codigo repetido 
-    const startGoogleSingIn = async () => {
+
+    const startGithubAndGoogleSinIn = async ( provider = '' ) => {
         dispatch(checkingCredentials());
-        
-        const { ok, displayName , photoURL , email , errorMessage , providerId} = await signInWithGoogle();
+
+        const { ok, displayName , photoURL , email , errorMessage , providerId} = await  googleAndGithubProvider(provider);
         
         if(!ok) return dispatch(logout(errorMessage))
     
@@ -26,7 +26,7 @@ export const useAuthStore = () => {
             const { user , token  } = data;
 
             dispatch(login( {
-                correo : email,
+                email,
                 displayName,
                 photoURL,
                 uid : user.uid
@@ -38,41 +38,9 @@ export const useAuthStore = () => {
         } catch (error) {
             
             dispatch(logout(error.response.data.msg))
+            // todo : hacer el dispatch de del logout en firebase
         }
-        
-    }
 
-    //! codigo repetido 
-    
-    const startGitHubSingIn = async () => {
-        dispatch(checkingCredentials());
-        
-        const { ok , displayName , photoURL , email  , errorMessage , providerId} = await singInWithGitHub();
-        
-        if(!ok) return dispatch(logout(errorMessage))
-
-
-        
-        try {
-            const { data } = await axiosInstance.post('/auth/providers' , { nombre : displayName , correo  : email , img : photoURL , provider : providerId} )
-
-            
-            const { user , token  } = data;
-
-            dispatch(login( {
-                correo : email,
-                displayName,
-                photoURL,
-                uid : user.uid
-            }))
-
-            localStorage.setItem('x-token' , token);
-        
-        } catch (error) {
-            
-            dispatch(logout(error.response.data.msg))
-        }
-        
     }
 
     const startEmailAndPasswordRegister = async ({email , password , displayName }) =>{
@@ -127,8 +95,8 @@ export const useAuthStore = () => {
         
         } catch (error) {
             
-            // dispatch(logout(error.response.data.msg))
-            console.log(error)
+            dispatch(logout(error.response.data.msg))
+            // todo : hacer el dispatch de del logout en firebase
         }
 
     }
@@ -136,8 +104,7 @@ export const useAuthStore = () => {
     return {
         // methods
         checkingAuthentication,
-        startGoogleSingIn,
-        startGitHubSingIn,
+        startGithubAndGoogleSinIn,
         startEmailAndPasswordRegister,
         startEmailAndPasswordSingIn
     }

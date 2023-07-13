@@ -4,10 +4,12 @@ import { FirebaseAuth } from './config';
 const googleProvider = new GoogleAuthProvider();
 const gitHubProvider = new GithubAuthProvider();
 
-export const signInWithGoogle = async () =>{
+export const googleAndGithubProvider = async ( provider = '' ) => {
+
+    const firebaseProvider = (provider == 'google' ? googleProvider : gitHubProvider);
 
     try {
-        const {user , providerId } = await signInWithPopup( FirebaseAuth , googleProvider);
+        const {user , providerId } = await signInWithPopup( FirebaseAuth , firebaseProvider );
         
         const {displayName , email , photoURL } = user;
         return {
@@ -42,49 +44,8 @@ export const signInWithGoogle = async () =>{
             errorMessage
         }
     }
-
 }
 
-export const singInWithGitHub = async () => {
-    try {
-        const { user , providerId} = await signInWithPopup(FirebaseAuth , gitHubProvider); 
-        const {displayName , email , photoURL } = user;
-        
-
-        return {
-            ok : true ,
-            displayName , email , photoURL , providerId  
-        }
-
-    } catch (error) {
-        
-        let errorMessage ;
-
-        switch (error.code) {
-
-            case 'auth/account-exists-with-different-credential':
-                errorMessage = 'Ya existe la cuenta con otra credencial , intentelo con google o ingrese con su usuario y contraseña'
-            break;
-        
-            case 'auth/cancelled-popup-request':
-                errorMessage  = 'se ha cancelado la solicitud de authenticación'
-            break
-
-            case 'auth/popup-closed-by-user':
-                errorMessage  = 'ventana cerrada'
-            break
-
-            default:
-                errorMessage = error.code
-            break;
-        }
-    
-        return {
-            ok : false,
-            errorMessage
-        }
-    }
-}
 
 export const registerUserWithEmailPassword = async ({email , password , displayName }) =>{
     try {   

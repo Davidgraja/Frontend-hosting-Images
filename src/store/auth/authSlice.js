@@ -32,7 +32,9 @@ export const authSlice = createSlice({
         },
 
         checkingCredentials : (state , action) => {
-            state.status = 'checking'
+            state.status = 'checking';
+            state.errorMessage = null;
+
         }
 
 
