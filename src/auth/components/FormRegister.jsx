@@ -1,4 +1,4 @@
-import { useForm } from "../../hooks"
+import { useAuthStore, useForm } from "../../hooks"
 import { FormBasic } from "./FormBasic"
 
 export const FormRegister = () => {
@@ -9,10 +9,14 @@ export const FormRegister = () => {
         password : ''
     })
 
+    const { startEmailAndPasswordRegister } = useAuthStore()
+
     const onSubmit = (event) =>{
         event.preventDefault()
         if(!nombre || !email || !password) return;
         console.log({nombre , email, password})
+
+        startEmailAndPasswordRegister({ displayName : nombre , email , password })
     }
     return (
         <FormBasic btnText={'Registrarse'}  submitEvent={ onSubmit }>

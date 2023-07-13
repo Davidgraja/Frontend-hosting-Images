@@ -1,4 +1,4 @@
-import  {  GoogleAuthProvider ,  GithubAuthProvider , signInWithPopup, createUserWithEmailAndPassword} from "firebase/auth"
+import  {  GoogleAuthProvider ,  GithubAuthProvider , signInWithPopup, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword} from "firebase/auth"
 import { FirebaseAuth } from './config';
 
 const googleProvider = new GoogleAuthProvider();
@@ -7,12 +7,12 @@ const gitHubProvider = new GithubAuthProvider();
 export const signInWithGoogle = async () =>{
 
     try {
-        const {user } = await signInWithPopup( FirebaseAuth , googleProvider);
+        const {user , providerId } = await signInWithPopup( FirebaseAuth , googleProvider);
         
         const {displayName , email , photoURL } = user;
         return {
             ok : true ,
-            displayName , email , photoURL 
+            displayName , email , photoURL , providerId
         }
         
     } catch (error) {
@@ -47,13 +47,13 @@ export const signInWithGoogle = async () =>{
 
 export const singInWithGitHub = async () => {
     try {
-        const { user } = await signInWithPopup(FirebaseAuth , gitHubProvider); 
+        const { user , providerId} = await signInWithPopup(FirebaseAuth , gitHubProvider); 
         const {displayName , email , photoURL } = user;
         
 
         return {
             ok : true ,
-            displayName , email , photoURL ,  
+            displayName , email , photoURL , providerId  
         }
 
     } catch (error) {
@@ -89,19 +89,71 @@ export const singInWithGitHub = async () => {
 export const registerUserWithEmailPassword = async ({email , password , displayName }) =>{
     try {   
         
-        const response = await createUserWithEmailAndPassword(FirebaseAuth ,  email ,  password);
-        const { photoURL} = response.user;
+        await createUserWithEmailAndPassword(FirebaseAuth ,  email ,  password);
 
-        await updateProfile(FirebaseAuth.currentUser , { displayName }) 
-        
+        await updateProfile(FirebaseAuth.currentUser , { displayName });
+
         return {
-            ok : true ,
-            photoURL , email , displayName
+            ok : true 
         }
 
     } catch (error) {
-        // if(error.message.includes('auth/email-already-in-use')) return { ok : false , errorMessage : 'El correo ingresado ya se encuentra en uso'}
-        // return { ok : false , errorMessage : error.message}
-        console.log(error)
+        let errorMessage;
+
+        switch (error.code) {
+            case 'auth/email-already-in-use':
+                errorMessage  = 'El correo ingresado ya se encuentra en uso'
+            break;
+            
+            case 'auth/weak-password':
+                errorMessage  = 'La contraseña es demasiado debil'
+            break;
+
+            default:
+                errorMessage  = error.code
+            break;
+        }
+
+        return { ok : false , errorMessage }
+    }
+}
+
+
+export const singInWidthEmailAndPassword = async ({email , password}) => {
+    try {
+        const response = await signInWithEmailAndPassword(FirebaseAuth , email , password );
+        const {displayName } = response.user;
+        return {
+            ok : true,
+            displayName
+
+        }
+    } catch (error) {
+        
+        let errorMessage ; 
+
+        switch (error.code) {
+            case 'auth/wrong-password':
+                errorMessage = 'El email o contraseña no son correctos , por favor verifiquelos e intente de nuevo'
+            break;
+            
+            case 'auth/user-not-found':
+                errorMessage = 'El email o contraseña no son correctos , por favor verifiquelos e intente de nuevo'
+            break;
+
+            case 'auth/too-many-requests':
+                errorMessage = 'El acceso a esta cuenta se ha inhabilitado temporalmente debido a muchos intentos fallidos de inicio de sesión. Por favor intentelo más tarde'
+            break;
+        
+            default:
+                errorMessage  = error.code
+            break;
+        }
+        
+        return {
+            ok: false ,
+            errorMessage 
+        }
+
     }
 }

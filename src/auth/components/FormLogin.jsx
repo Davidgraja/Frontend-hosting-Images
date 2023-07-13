@@ -8,12 +8,12 @@ export const FormLogin = () => {
         password : ''
     })
 
-    const{ checkingAuthentication } = useAuthStore()
+    const{ startEmailAndPasswordSingIn } = useAuthStore()
 
     const onSubmit = (event) =>{
         event.preventDefault()
         if(!email || !password) return;
-        checkingAuthentication()
+        startEmailAndPasswordSingIn({email, password})
     }
 
     return (
