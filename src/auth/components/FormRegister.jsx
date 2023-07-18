@@ -1,3 +1,4 @@
+import { messages } from "../../helpers/messages"
 import { useAuthStore, useForm } from "../../hooks"
 import { FormBasic } from "./FormBasic"
 
@@ -14,7 +15,14 @@ export const FormRegister = () => {
     const onSubmit = (event) =>{
         event.preventDefault()
         if(!nombre || !email || !password) return;
-        console.log({nombre , email, password})
+
+        if(nombre.trim().length < 4 ) {
+            return messages('Atencion : el nombre debe de tener como minimo 4 caracteres' ,'linear-gradient(to right, #F1C40F  ,#F5B041)')
+        }  
+        
+        if(password.trim().length < 6 ) {
+            return messages('Atencion : La contraseña debe de contener como minimo 6 caracteres' ,'linear-gradient(to right, #F1C40F  ,#F5B041)')
+        }
 
         startEmailAndPasswordRegister({ displayName : nombre , email , password })
     }

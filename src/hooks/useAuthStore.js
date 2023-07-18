@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux"
 import { checkingCredentials, login, logout } from "../store/auth";
-import { registerUserWithEmailPassword , singInWidthEmailAndPassword  , googleAndGithubProvider} from "../firebase/providers";
 import axiosInstance from "../axios/axiosInstance";
+import { messages } from "../helpers/messages";
 
 export const useAuthStore = () => {
 
-    const { status } = useSelector(state => state.auth);
+    const { status , errorMessage} = useSelector(state => state.auth);
     const dispatch = useDispatch();
 
     const checkingAuthentication = () =>{
@@ -13,43 +13,14 @@ export const useAuthStore = () => {
     }
 
 
-    const startGithubAndGoogleSinIn = async ( provider = '' ) => {
-        dispatch(checkingCredentials());
-
-        const { ok, displayName , photoURL , email , errorMessage , providerId} = await  googleAndGithubProvider(provider);
-        
-        if(!ok) return dispatch(logout(errorMessage))
-    
-        try {
-            const { data } = await axiosInstance.post('/auth/providers' , { nombre : displayName , correo  : email , img : photoURL , provider : providerId} )
-        
-            const { user , token  } = data;
-
-            dispatch(login( {
-                email,
-                displayName,
-                photoURL,
-                uid : user.uid
-            }))
-
-            localStorage.setItem('x-token' , token);
-
-        
-        } catch (error) {
-            
-            dispatch(logout(error.response.data.msg))
-            // todo : hacer el dispatch de del logout en firebase
-        }
-
-    }
-
     const startEmailAndPasswordRegister = async ({email , password , displayName }) =>{
-        dispatch(checkingCredentials());
-        const { ok  , errorMessage} =  await registerUserWithEmailPassword({email , password , displayName })
-        if(!ok) return dispatch(logout(errorMessage))
 
         try {
+
+            dispatch(checkingCredentials());
+
             const { data } = await axiosInstance.post('/users' , { nombre : displayName , correo  : email , password } );
+            
             const { usuario , token } = data;
     
             dispatch(login( {
@@ -61,51 +32,57 @@ export const useAuthStore = () => {
 
             localStorage.setItem('x-token' , token);
 
+            messages(`Bienvenido ${displayName}`,'linear-gradient(to right, #28B463 , #58D68D)')
+
             
         } catch (error) {
-            dispatch(logout(error.response.data.msg))
-            // todo : hacer el dispatch de del logout en firebase
-            
+            console.log(error)
+            dispatch(logout(error.response.data.msg))    
         }
 
     }
 
     const startEmailAndPasswordSingIn = async ({email , password}) =>{
         
-        dispatch(checkingCredentials());
-
-        const { ok , displayName , errorMessage } =  await singInWidthEmailAndPassword( { email , password});
-        
-        if(!ok) return dispatch(logout(errorMessage))
-        
         try {
-            const { data } = await axiosInstance.post('/auth/login' , { correo  : email , password} )
+            dispatch(checkingCredentials());
+            const {data} = await axiosInstance.post('/auth/login' , { correo  : email , password} );
 
-            
             const { user , token  } = data;
 
             dispatch(login( {
                 email,
-                displayName,
+                displayName : user.nombre,
                 photoURL : user.img,
                 uid :user.uid
             }))
 
             localStorage.setItem('x-token' , token);
-        
-        } catch (error) {
+
+            messages(`Bienvenido ${user.nombre}`,'linear-gradient(to right, #28B463 , #58D68D)')
             
+        } catch (error) {
+
+            console.log(error)
             dispatch(logout(error.response.data.msg))
-            // todo : hacer el dispatch de del logout en firebase
         }
 
     }
 
+    // const startCheckAuthToken = async () =>{
+    //     const token = localStorage.getItem('token');
+    //     if(!token) return dispatch(logout());
+    // }
     return {
+        // Properties
+        status,
+        errorMessage,
+
+
         // methods
         checkingAuthentication,
-        startGithubAndGoogleSinIn,
         startEmailAndPasswordRegister,
-        startEmailAndPasswordSingIn
+        startEmailAndPasswordSingIn,
+        // startCheckAuthToken
     }
 }
