@@ -8,8 +8,6 @@ import {Provider}  from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 
 import { store } from './store'
-
-const isTrue = false;
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
 
@@ -17,7 +15,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
         <BrowserRouter>
         
-          <main data-theme={isTrue ? 'dark' : 'light'} className=' h-screen font-OpenSans'>
+          <main >
             <App />
           </main>
         

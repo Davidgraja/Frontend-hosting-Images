@@ -1,7 +1,20 @@
 import { useState } from "react"
+import { useAuthStore } from "../../hooks/useAuthStore"
+import { useThemeStore } from "../../hooks"
 
 export const Navbar = () => {
-    const [toggle, settoggle] = useState(false)
+    const { displayName , photoURL , startLogout } = useAuthStore()
+    const { startChangeMode , toggle , startChangeToggle} = useThemeStore()
+
+    const onLogout = () =>{
+        startLogout()
+    }
+
+    const onChangeMode = () =>{
+        startChangeToggle()
+        startChangeMode(toggle)
+    }
+
     return (
         <div className="navbar bg-base-100">
             <div className="navbar-start">
@@ -19,7 +32,7 @@ export const Navbar = () => {
 
                 </div>
 
-                <a className="btn btn-ghost normal-case text-xl">David Grajales</a>
+                <a className="btn btn-ghost normal-case text-xl">{ displayName }</a>
 
             </div>
 
@@ -37,6 +50,7 @@ export const Navbar = () => {
                 <div className="dropdown dropdown-end">
                     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
 
+                        {/* todo : implementar la foto de perfil del usuario */}
                         <div className="w-10 rounded-full">
                             <img src="https://lh3.google.com/u/0/ogw/AOLn63E6m2d64F3Se5pByMw6nnFhKGLZHxLNNx6uwV71=s32-c-mo" />
                         </div>
@@ -48,11 +62,15 @@ export const Navbar = () => {
                         <li>
                             <label className="label" >
                                 <span className=" label-text"> Modo oscuro </span>
-                                <input type="checkbox" className="toggle toggle-success" value={toggle}  onChange={(e) => settoggle( !e.target.checked )}  />
+                                <input 
+                                    type="checkbox" 
+                                    className="toggle toggle-success" 
+                                    onClick={onChangeMode}
+                                />
                             </label>
                         </li>
                         <li><a>Eliminar cuenta</a></li>
-                        <li><a>Salir</a></li>
+                        <li onClick={onLogout}> <a>Salir</a> </li>
 
                     </ul>
                 </div>

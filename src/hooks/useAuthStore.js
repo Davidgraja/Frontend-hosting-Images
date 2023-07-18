@@ -5,7 +5,8 @@ import { messages } from "../helpers/messages";
 
 export const useAuthStore = () => {
 
-    const { status , errorMessage} = useSelector(state => state.auth);
+    const { status , errorMessage , displayName , photoURL} = useSelector(state => state.auth);
+
     const dispatch = useDispatch();
 
     const checkingAuthentication = () =>{
@@ -30,7 +31,7 @@ export const useAuthStore = () => {
                 uid :usuario.uid
             }))
 
-            localStorage.setItem('x-token' , token);
+            localStorage.setItem('token' , token);
 
             messages(`Bienvenido ${displayName}`,'linear-gradient(to right, #28B463 , #58D68D)')
 
@@ -57,7 +58,7 @@ export const useAuthStore = () => {
                 uid :user.uid
             }))
 
-            localStorage.setItem('x-token' , token);
+            localStorage.setItem('token' , token);
 
             messages(`Bienvenido ${user.nombre}`,'linear-gradient(to right, #28B463 , #58D68D)')
             
@@ -69,20 +70,51 @@ export const useAuthStore = () => {
 
     }
 
-    // const startCheckAuthToken = async () =>{
-    //     const token = localStorage.getItem('token');
-    //     if(!token) return dispatch(logout());
-    // }
+    const startCheckAuthToken = async () =>{
+        dispatch(checkingCredentials())
+
+        const token = localStorage.getItem('token');
+        if(!token) return dispatch(logout());
+        
+        try {
+            const {data} = await axiosInstance.get('/auth/renew')
+
+            const {token , user}  = data
+
+            dispatch(login({
+                uid : user.uid,
+                email : user.correo,
+                displayName : user.nombre,
+                photoURL : user.img
+            }))
+
+            localStorage.setItem('token', token)
+
+        } catch (error) {
+            dispatch(logout(error.data.msg))
+        }
+
+    }
+
+    const startLogout = () =>{
+        localStorage.removeItem('token')
+        dispatch(logout())
+    }
+
+
     return {
         // Properties
         status,
         errorMessage,
+        displayName ,
+        photoURL,
 
 
         // methods
         checkingAuthentication,
         startEmailAndPasswordRegister,
         startEmailAndPasswordSingIn,
-        // startCheckAuthToken
+        startCheckAuthToken,
+        startLogout
     }
 }

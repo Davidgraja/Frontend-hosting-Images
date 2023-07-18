@@ -4,11 +4,11 @@ const axiosInstance = axios.create({
     baseURL : import.meta.env.VITE_BASE_URL
 })
 
-axiosInstance.interceptors.response.use( config => {
+axiosInstance.interceptors.request.use( config => {
 
-    config.request = {
+    config.headers = {
         ...config.headers,
-        'x-token' : localStorage.getItem('x-token')
+        'x-token' : localStorage.getItem('token')
     }
 
     return config;

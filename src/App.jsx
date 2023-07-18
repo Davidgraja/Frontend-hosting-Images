@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useAuthStore } from "./hooks"
+import { useAuthStore, useThemeStore } from "./hooks"
 import { AppRouter } from "./router/AppRouter"
 import { messages } from "./helpers/messages"
 
@@ -13,9 +13,13 @@ function App() {
     }
   }, [errorMessage])
   
+  const {darkMode} = useThemeStore()
 
   return (
-    <AppRouter/>
+    <div data-theme={darkMode ? 'dark' : 'light'} className=' h-screen font-OpenSans'>
+      <AppRouter/>
+
+    </div>
   )
 }
 

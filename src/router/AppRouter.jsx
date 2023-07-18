@@ -6,11 +6,11 @@ import { HostingRoutes } from "../hosting/router/HostingRoutes"
 
 export const AppRouter = () => {
 
-    const { status } = useAuthStore();
+    const { status , startCheckAuthToken } = useAuthStore();
 
-    // useEffect(() => {
-    //     startCheckAuthToken()
-    // }, [])
+    useEffect(() => {
+        startCheckAuthToken()
+    }, [])
     
     return (
         <>
