@@ -8,7 +8,11 @@ export default {
     extend: {},
     fontFamily : {
       OpenSans : ['Open Sans' , 'sans-serif']
-    }
+    },
+    gridTemplateColumns: {
+      'folderItems' : 'repeat(auto-fill, minmax(200px , 320px))'
+    },
+
   },
   plugins: [require("daisyui")],
   

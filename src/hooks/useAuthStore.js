@@ -91,7 +91,7 @@ export const useAuthStore = () => {
             localStorage.setItem('token', token)
 
         } catch (error) {
-            dispatch(logout(error.data.msg))
+            dispatch(logout())
         }
 
     }
